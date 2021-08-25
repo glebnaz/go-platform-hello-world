@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/glebnaz/go-platform-hello-world/internal/app/services"
 	pb "github.com/glebnaz/go-platform-hello-world/pkg/pb/api/v1"
 	"github.com/glebnaz/go-platform/http"
 	"github.com/glebnaz/go-platform/metrics"
@@ -69,8 +70,7 @@ func newApp() app {
 	var opts []grpc.ServerOption
 	//grpc server
 	grpcServer := grpc.NewServer(opts...)
-	//todo добавить сюда реализацию!
-	pb.RegisterPetStoreServer(grpcServer, nil)
+	pb.RegisterPetStoreServer(grpcServer, services.NewService())
 
 	return app{
 		cfg:        cfg,
