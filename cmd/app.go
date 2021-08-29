@@ -5,6 +5,8 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/glebnaz/go-platform-hello-world/internal/pkg/bindata"
+
 	"github.com/glebnaz/go-platform-hello-world/internal/app/services"
 	gw "github.com/glebnaz/go-platform-hello-world/pkg/pb/api/v1"
 	pb "github.com/glebnaz/go-platform-hello-world/pkg/pb/api/v1"
@@ -111,14 +113,17 @@ func debugServer(ctx context.Context) *echo.Echo {
 	s := echo.New()
 
 	s.GET(metricsURI, echo.WrapHandler(metrics.Handler()))
+	s.GET("/swagger", func(c echo.Context) error {
+		return c.Blob(http.StatusOK, "application/json", bindata.MustAsset("api/api.swagger.json"))
+	})
 	return s
 }
 
 func httpServer(ctx context.Context) *runtime.ServeMux {
 	srv := services.NewService()
-	var o runtime.JSONPb
-	o.UseProtoNames = true
-	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &o))
+	var jsonPb runtime.JSONPb
+	jsonPb.UseProtoNames = true
+	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &jsonPb))
 	mustInit(gw.RegisterPetStoreHandlerServer(ctx, mux, srv))
 	return mux
 }
