@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -18,7 +19,11 @@ func init() {
 }
 
 func main() {
-	app := newApp()
+	ctx := context.Background()
 
-	app.Start()
+	app := newApp(ctx, nil)
+
+	if err := app.Start(ctx); err != nil {
+		log.Errorf("bad start app: %s", err)
+	}
 }

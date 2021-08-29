@@ -1,50 +1,70 @@
 package main
 
 import (
+	"context"
 	"net"
+	"net/http"
 
 	"github.com/glebnaz/go-platform-hello-world/internal/app/services"
+	gw "github.com/glebnaz/go-platform-hello-world/pkg/pb/api/v1"
 	pb "github.com/glebnaz/go-platform-hello-world/pkg/pb/api/v1"
-	"github.com/glebnaz/go-platform/http"
 	"github.com/glebnaz/go-platform/metrics"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/labstack/echo"
+	runner "github.com/oklog/run"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )
 
+const metricsURI = "/metrics"
+
 type app struct {
 	//http servers
-	debug      *echo.Echo
-	http       *echo.Echo
-	grpcServer *grpc.Server
-
+	debug     *echo.Echo
+	muxServer *runtime.ServeMux
 	//grpc server
+	grpcServer *grpc.Server
 
 	cfg cfgApp
 }
 
 //Start app with grpc and http
-func (a app) Start() {
-	//todo check error in this function
-	a.http.HideBanner = true
-	a.debug.HideBanner = true
+func (a app) Start(ctx context.Context) error {
+	var serverGroup runner.Group
 
-	//debug
-	go a.debug.Start(a.cfg.DebugPort)
-	log.Infof("debug server started at port: %s", a.cfg.DebugPort)
-
-	//http
-	go a.http.Start(a.cfg.PortHTTP)
-	log.Infof("http server started at port: %s", a.cfg.PortHTTP)
+	//add debug
+	serverGroup.Add(func() error {
+		a.debug.HideBanner = true
+		a.debug.HidePort = true
+		log.Infof("debug server started at port: %s", a.cfg.DebugPort)
+		return a.debug.Start(a.cfg.DebugPort)
+	}, func(err error) {
+		log.Errorf("Error start debug server: %s", err)
+	})
 
 	//grpc
-	lis, err := net.Listen("tcp", a.cfg.PortGRPC)
-	if err != nil {
-		log.Fatalf("bad start grpc port: %s", err)
-	}
+	serverGroup.Add(func() error {
+		lis, err := net.Listen("tcp", a.cfg.PortGRPC)
+		if err != nil {
+			log.Fatalf("bad start grpc port: %s", err)
+			return err
+		}
+		log.Infof("grpc start at: %s", a.cfg.PortGRPC)
+		return a.grpcServer.Serve(lis)
+	}, func(err error) {
+		log.Errorf("bad start grpc port: %s", err)
+	})
 
-	a.grpcServer.Serve(lis)
+	//grpc
+	serverGroup.Add(func() error {
+		log.Infof("http server started at port: %s", a.cfg.PortHTTP)
+		return http.ListenAndServe(a.cfg.PortHTTP, a.muxServer)
+	}, func(err error) {
+		log.Errorf("bad start http port: %s", err)
+	})
+
+	return serverGroup.Run()
 }
 
 type cfgApp struct {
@@ -53,37 +73,58 @@ type cfgApp struct {
 	PortGRPC  string `json:"port_grpc" envconfig:"PORT_GRPC" default:":8082"`
 }
 
-func newApp() app {
+func newApp(ctx context.Context, grpcOPTS []grpc.ServerOption) app {
 	var cfg cfgApp
 
-	err := envconfig.Process("", &cfg)
+	err := envconfig.Process("APP", &cfg)
 	if err != nil {
 		log.Fatalf("cfg app is bad: %s", err)
 	}
 
 	//debug port
-	serverDBG := debugServer()
+	serverDBG := debugServer(ctx)
 
-	//server
-	server := http.InitRouters(routers)
-
-	//todo добавить опты, скорее всего нужно будет докинуть реализацию interseptors
-	var opts []grpc.ServerOption
 	//grpc server
-	grpcServer := grpc.NewServer(opts...)
-	pb.RegisterPetStoreServer(grpcServer, services.NewService())
+	grpcServer := grpcServer(ctx, grpcOPTS)
+
+	muxServer := httpServer(ctx)
 
 	return app{
 		cfg:        cfg,
 		debug:      serverDBG,
-		http:       server,
 		grpcServer: grpcServer,
+		muxServer:  muxServer,
 	}
 }
 
-func debugServer() *echo.Echo {
+func grpcServer(ctx context.Context, grpcOPTS []grpc.ServerOption) *grpc.Server {
+	srv := services.NewService()
+
+	//grpc server
+	grpcServer := grpc.NewServer(grpcOPTS...)
+	pb.RegisterPetStoreServer(grpcServer, srv)
+
+	return grpcServer
+}
+
+func debugServer(ctx context.Context) *echo.Echo {
 	s := echo.New()
 
-	s.GET("/metrics", echo.WrapHandler(metrics.Handler()))
+	s.GET(metricsURI, echo.WrapHandler(metrics.Handler()))
 	return s
+}
+
+func httpServer(ctx context.Context) *runtime.ServeMux {
+	srv := services.NewService()
+	var o runtime.JSONPb
+	o.UseProtoNames = true
+	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &o))
+	mustInit(gw.RegisterPetStoreHandlerServer(ctx, mux, srv))
+	return mux
+}
+
+func mustInit(err error) {
+	if err != nil {
+		log.Fatalf("Error init: %s", err)
+	}
 }
