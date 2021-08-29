@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/glebnaz/go-platform v0.0.0-20210801170333-1a8c4448b0bd
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.5.0 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.5.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/sirupsen/logrus v1.8.1

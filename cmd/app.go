@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net"
+
 	"github.com/glebnaz/go-platform-hello-world/internal/app/services"
 	pb "github.com/glebnaz/go-platform-hello-world/pkg/pb/api/v1"
 	"github.com/glebnaz/go-platform/http"
@@ -9,7 +11,6 @@ import (
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"net"
 )
 
 type app struct {
