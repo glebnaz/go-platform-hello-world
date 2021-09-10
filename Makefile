@@ -1,5 +1,3 @@
-
-
 .PHONY: generate
 generate: generate-proto-go
 
@@ -16,7 +14,7 @@ generate-proto-go:
 
 .PHONY: build
 build:
-	CGO_ENABLED=0 go build -v -o bin/local ./cmd
+	CGO_ENABLED=0 go build -ldflags='-w -s' -v -o bin/local ./cmd
 
 .PHONY: lint
 lint:
