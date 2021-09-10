@@ -19,7 +19,10 @@ import (
 	"google.golang.org/grpc"
 )
 
-const metricsURI = "/metrics"
+const (
+	metricsURI = "/metrics"
+	swaggerURI = "/swagger"
+)
 
 type app struct {
 	//http servers
@@ -113,7 +116,7 @@ func debugServer(ctx context.Context) *echo.Echo {
 	s := echo.New()
 
 	s.GET(metricsURI, echo.WrapHandler(metrics.Handler()))
-	s.GET("/swagger", func(c echo.Context) error {
+	s.GET(swaggerURI, func(c echo.Context) error {
 		return c.Blob(http.StatusOK, "application/json", bindata.MustAsset("api/api.swagger.json"))
 	})
 	return s

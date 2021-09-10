@@ -176,6 +176,9 @@ var _apiApiSwaggerJson = []byte(`{
         "pet_type": {
           "$ref": "#/definitions/v1PetType"
         },
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         }

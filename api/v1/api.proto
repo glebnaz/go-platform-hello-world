@@ -33,6 +33,7 @@ message GetPetResponse {
 
 message PutPetRequest {
   PetType pet_type = 1;
+  string id = 3;
   string name = 2;
 }
 
@@ -63,4 +64,5 @@ service PetStore {
       delete: "/pet/delete"
     };
   }
+
 }
