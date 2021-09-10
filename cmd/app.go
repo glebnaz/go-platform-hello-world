@@ -86,13 +86,15 @@ func newApp(ctx context.Context, grpcOPTS []grpc.ServerOption) app {
 		log.Fatalf("cfg app is bad: %s", err)
 	}
 
+	srv := services.NewService()
+
 	//debug port
 	serverDBG := debugServer(ctx)
 
 	//grpc server
-	grpcServer := grpcServer(ctx, grpcOPTS)
+	grpcServer := grpcServer(ctx, srv, grpcOPTS)
 
-	muxServer := httpServer(ctx)
+	muxServer := httpServer(ctx, srv)
 
 	return app{
 		cfg:        cfg,
@@ -102,9 +104,7 @@ func newApp(ctx context.Context, grpcOPTS []grpc.ServerOption) app {
 	}
 }
 
-func grpcServer(ctx context.Context, grpcOPTS []grpc.ServerOption) *grpc.Server {
-	srv := services.NewService()
-
+func grpcServer(ctx context.Context, srv *services.Service, grpcOPTS []grpc.ServerOption) *grpc.Server {
 	//grpc server
 	grpcServer := grpc.NewServer(grpcOPTS...)
 	pb.RegisterPetStoreServer(grpcServer, srv)
@@ -122,8 +122,7 @@ func debugServer(ctx context.Context) *echo.Echo {
 	return s
 }
 
-func httpServer(ctx context.Context) *runtime.ServeMux {
-	srv := services.NewService()
+func httpServer(ctx context.Context, srv *services.Service) *runtime.ServeMux {
 	var jsonPb runtime.JSONPb
 	jsonPb.UseProtoNames = true
 	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &jsonPb))

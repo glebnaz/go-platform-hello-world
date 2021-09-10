@@ -69,7 +69,7 @@ func (s *Service) DeletePet(ctx context.Context, request *pb.DeletePetRequest) (
 	panic("implement me")
 }
 
-func NewService() pb.PetStoreServer {
+func NewService() *Service {
 	d := make(map[string]*pb.Pet)
 	s := Store{
 		data: d,
