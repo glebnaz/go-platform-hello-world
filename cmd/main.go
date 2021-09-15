@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"google.golang.org/grpc"
 	"os"
 
+	grpcInternal "github.com/glebnaz/go-platform/grpc"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -21,7 +23,7 @@ func init() {
 func main() {
 	ctx := context.Background()
 
-	app := newApp(ctx, nil)
+	app := newApp(ctx, grpc.UnaryInterceptor(grpcInternal.NewServerUnaryLoggerInterceptor()))
 
 	if err := app.Start(ctx); err != nil {
 		log.Errorf("bad start app: %s", err)

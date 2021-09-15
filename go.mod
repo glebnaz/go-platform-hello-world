@@ -3,7 +3,7 @@ module github.com/glebnaz/go-platform-hello-world
 go 1.15
 
 require (
-	github.com/glebnaz/go-platform v0.0.0-20210801170333-1a8c4448b0bd
+	github.com/glebnaz/go-platform v0.0.0-20210915170200-063d87fbf991
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.5.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/labstack/echo v3.3.10+incompatible

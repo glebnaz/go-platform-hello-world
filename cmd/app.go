@@ -8,7 +8,6 @@ import (
 	"github.com/glebnaz/go-platform-hello-world/internal/pkg/bindata"
 
 	"github.com/glebnaz/go-platform-hello-world/internal/app/services"
-	gw "github.com/glebnaz/go-platform-hello-world/pkg/pb/api/v1"
 	pb "github.com/glebnaz/go-platform-hello-world/pkg/pb/api/v1"
 	"github.com/glebnaz/go-platform/metrics"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -78,7 +77,7 @@ type cfgApp struct {
 	PortGRPC  string `json:"port_grpc" envconfig:"PORT_GRPC" default:":8082"`
 }
 
-func newApp(ctx context.Context, grpcOPTS []grpc.ServerOption) app {
+func newApp(ctx context.Context, grpcOPTS ...grpc.ServerOption) app {
 	var cfg cfgApp
 
 	err := envconfig.Process("APP", &cfg)
@@ -126,7 +125,7 @@ func httpServer(ctx context.Context, srv *services.Service) *runtime.ServeMux {
 	var jsonPb runtime.JSONPb
 	jsonPb.UseProtoNames = true
 	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &jsonPb))
-	mustInit(gw.RegisterPetStoreHandlerServer(ctx, mux, srv))
+	mustInit(pb.RegisterPetStoreHandlerServer(ctx, mux, srv))
 	return mux
 }
 
