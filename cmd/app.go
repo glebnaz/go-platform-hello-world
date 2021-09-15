@@ -93,7 +93,7 @@ func newApp(ctx context.Context, grpcOPTS ...grpc.ServerOption) app {
 	//grpc server
 	grpcServer := grpcServer(ctx, srv, grpcOPTS)
 
-	muxServer := httpServer(ctx, srv)
+	muxServer := httpServer(ctx, cfg.PortGRPC)
 
 	return app{
 		cfg:        cfg,
@@ -121,11 +121,11 @@ func debugServer(ctx context.Context) *echo.Echo {
 	return s
 }
 
-func httpServer(ctx context.Context, srv *services.Service) *runtime.ServeMux {
+func httpServer(ctx context.Context, endpoint string) *runtime.ServeMux {
 	var jsonPb runtime.JSONPb
 	jsonPb.UseProtoNames = true
 	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &jsonPb))
-	mustInit(pb.RegisterPetStoreHandlerServer(ctx, mux, srv))
+	mustInit(pb.RegisterPetStoreHandlerFromEndpoint(ctx, mux, endpoint, []grpc.DialOption{grpc.WithInsecure()}))
 	return mux
 }
 
