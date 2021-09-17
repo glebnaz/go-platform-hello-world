@@ -1,11 +1,3 @@
-# Readme golang-platform-go
-
-Category: Developer
-CreateAt: September 17, 2021 11:46 PM
-In Progress: No
-Tags: Golang, Highload
-Update: September 18, 2021 12:40 AM
-
 # Go Platform
 
 Шаблонный репозиторий для генерации кода.
