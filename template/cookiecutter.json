@@ -1,0 +1,5 @@
+{
+  "project_name": "hello-world",
+  "github_link": "github.com/glebnaz",
+  "module_name": "{{ cookiecutter.github_link }}/{{ cookiecutter.project_name }}"
+}

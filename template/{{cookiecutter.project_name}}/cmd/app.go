@@ -5,10 +5,8 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/glebnaz/go-platform-hello-world/internal/pkg/bindata"
+	"{{ cookiecutter.module_name }}/internal/pkg/bindata"
 
-	"github.com/glebnaz/go-platform-hello-world/internal/app/services"
-	pb "github.com/glebnaz/go-platform-hello-world/pkg/pb/api/v1"
 	"github.com/glebnaz/go-platform/metrics"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/kelseyhightower/envconfig"
@@ -16,6 +14,8 @@ import (
 	runner "github.com/oklog/run"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"{{ cookiecutter.module_name }}/internal/app/services"
+	pb "{{ cookiecutter.module_name }}/pkg/pb/api/v1"
 )
 
 const (
