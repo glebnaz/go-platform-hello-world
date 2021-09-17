@@ -14,7 +14,7 @@
 - make generate - генерация swagger и *.pb файлов из proto из api/
 - make lint - запускает golangci lint
 
-При первом запуске нужно запустить [install.sh](http://install.sh), для установки buf, golangcilint , и остальных нужных инструментов
+При первом запуске нужно запустить [install.sh](https://github.com/glebnaz/go-platform-hello-world/blob/master/install.sh), для установки buf, golangcilint , и остальных нужных инструментов
 
 ## Generate your microservice from template:
 
