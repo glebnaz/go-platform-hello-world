@@ -72,6 +72,8 @@ github.com/glebnaz/go-platform v0.0.0-20210801170333-1a8c4448b0bd h1:w9HTQcrwaG+
 github.com/glebnaz/go-platform v0.0.0-20210801170333-1a8c4448b0bd/go.mod h1:rhVhk1Fkn6H9VIxEzwxjfl4GTIj0+e79mTWIV1h2/0g=
 github.com/glebnaz/go-platform v0.0.0-20210915170200-063d87fbf991 h1:xkrxupAgndMzbDFw252cdrmEH6CX+XNvABnNusUsPsI=
 github.com/glebnaz/go-platform v0.0.0-20210915170200-063d87fbf991/go.mod h1:7lJf737mzhLoA/VC+qgBv9y//GD1+Im2oEd47o8ok+Q=
+github.com/glebnaz/go-platform v1.0.0 h1:aY7Sbq0G8RukaOR3Z1Set4kkd1jA2XqTLpuJwOOuQzI=
+github.com/glebnaz/go-platform v1.0.0/go.mod h1:7lJf737mzhLoA/VC+qgBv9y//GD1+Im2oEd47o8ok+Q=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=

@@ -3,7 +3,7 @@ module {{ cookiecutter.module_name }}
 go 1.15
 
 require (
-	github.com/glebnaz/go-platform v0.0.0-20210915170200-063d87fbf991
+	github.com/glebnaz/go-platform v1.0.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.5.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/labstack/echo v3.3.10+incompatible
